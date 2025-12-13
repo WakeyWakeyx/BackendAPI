@@ -1,0 +1,7 @@
+﻿bin/
+obj/
+.idea/
+*.sln.iml
+.vs/
+*.user
+*.suo
