@@ -1,0 +1,6 @@
+@WakeyWakeyBackendApi_HostAddress = http://localhost:5147
+
+GET {{WakeyWakeyBackendApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
