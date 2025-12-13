@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WakeyWakeyBackendAPI.Models;
 
 namespace WakeyWakeyBackendAPI.Controllers
 {
@@ -7,6 +8,16 @@ namespace WakeyWakeyBackendAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        //here i am injecting the DB context into the controller
+        private readonly AppDbContext _context;
+
+        //here i am initializing the DB context via constructor injection
+        public AuthController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+
         // GET: api/<AuthController>
         [HttpGet]
         public IEnumerable<string> GetUsers()
