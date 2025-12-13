@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WakeyWakeyBackendAPI.Models;
 
 namespace WakeyWakeyBackendAPI.Controllers
@@ -36,8 +37,13 @@ namespace WakeyWakeyBackendAPI.Controllers
 
         
         [HttpPost]
-        public void Register([FromBody] string value)
+        public async Task<IActionResult> Register([FromBody] User user)
         {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "User registered successfully" });
+
         }
 
         // DELETE api/<AuthController.cs>/5

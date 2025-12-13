@@ -1,9 +1,16 @@
-﻿namespace WakeyWakeyBackendAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WakeyWakeyBackendAPI.Models
 {
     public class User
     {
         public int Id { get; set; }
-        public required string  Email { get; set; }
+
+        [Required(ErrorMessage ="Email is required")]
+        [EmailAddress(ErrorMessage ="Invalid email format")]
+        public required string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
         public required string PasswordHash { get; set; }
     }
 }
