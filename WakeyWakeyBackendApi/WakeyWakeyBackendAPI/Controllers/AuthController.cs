@@ -8,7 +8,6 @@ using WakeyWakeyBackendAPI.Models;
 
 namespace WakeyWakeyBackendAPI.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -58,7 +57,7 @@ namespace WakeyWakeyBackendAPI.Controllers
 
         
         [HttpPost("create")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        public async Task<ActionResult<string>> Register([FromBody] User user)
         {
             var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
             user.Password = hashedPassword;
@@ -71,7 +70,7 @@ namespace WakeyWakeyBackendAPI.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO request)
+        public async Task<ActionResult<bool>> Login([FromBody] LoginUserDTO request)
         {
             var user = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (user == null) {
