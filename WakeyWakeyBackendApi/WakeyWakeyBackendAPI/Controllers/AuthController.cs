@@ -40,6 +40,15 @@ namespace WakeyWakeyBackendAPI.Controllers
             return Ok(users);
         }
 
+
+        //fetch user method
+        //[HttpGet("fetchUser")]
+        //public async Task<ActionResult<User>> FetchUser()
+        //{
+        //    //would fetch user details based on the access token the user would be assigned when they create their account
+        //}
+
+
         // GET api/<AuthController.cs>/5
         [HttpGet("getUserEmail/{id}")]
         public async Task<ActionResult<GetUserEmailDTO>> GetUserEmail(int id)
