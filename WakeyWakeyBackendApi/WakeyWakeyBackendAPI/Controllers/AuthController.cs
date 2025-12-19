@@ -1,49 +1,85 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using WakeyWakeyBackendAPI.DTOs;
 using WakeyWakeyBackendAPI.Models;
 
 namespace WakeyWakeyBackendAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         //here i am injecting the DB context into the controller
         private readonly AppDbContext _context;
+        private readonly PasswordHasher<User> _passwordHasher;
 
         //here i am initializing the DB context via constructor injection
-        public AuthController(AppDbContext context)
+        public AuthController(AppDbContext context, PasswordHasher<User> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
 
-        // GET: api/<AuthController>
-        [HttpGet]
-        public IEnumerable<string> GetUsers()
+        // GET: api/<AuthController>/GetUsers
+        [HttpGet("getUsers")]
+        public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers()
         {
             //will use EF core to pull the users from the DB 
-            return new string[] { "value1", "value2" };
+            var users = await _context.Users
+            .Select(x => new UsersDTO
+            {
+                Id = x.Id,
+                Email = x.Email
+            })
+            .ToListAsync();
+
+            return Ok(users);
         }
 
         // GET api/<AuthController.cs>/5
-        [HttpGet("{id}")]
-        public string GetUserName(int id)
+        [HttpGet("getUserEmail/{id}")]
+        public async Task<ActionResult<GetUserEmailDTO>> GetUserEmail(int id)
         {
             //will also query for the user from the DB using the id as the primary key 
-            return "value";
+            var result = await _context.Users.Where(u => u.Id == id).Select(x => x.Email).FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                return NotFound(new { message = $"Username not found for user with id: {id}" });
+            }
+
+            return Ok(result);
         }
 
         
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
+            var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
+            user.Password = hashedPassword;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "User registered successfully" });
 
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO request)
+        {
+            var user = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
+            if (user == null) {
+                return NotFound("Couldn't find user with associated email.");
+            }
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
+            return result == PasswordVerificationResult.Success ? Ok(result) : Unauthorized();
         }
 
         // DELETE api/<AuthController.cs>/5

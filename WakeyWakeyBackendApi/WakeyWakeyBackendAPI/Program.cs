@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using WakeyWakeyBackendAPI.Models;
@@ -17,6 +18,8 @@ builder.Services.AddOpenApi();
 //this is where I am adding the DB context 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<PasswordHasher<User>>();
 
 
 var app = builder.Build();
