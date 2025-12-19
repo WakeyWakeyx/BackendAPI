@@ -57,9 +57,13 @@ namespace WakeyWakeyBackendAPI.Controllers
 
         
         [HttpPost("create")]
-        public async Task<ActionResult<string>> Register([FromBody] User user)
+        public async Task<ActionResult<string>> Register([FromBody] RegisterUserDTO registerRequest)
         {
-            var hashedPassword = _passwordHasher.HashPassword(user, user.Password);
+            var user = new User { 
+                Email = registerRequest.Email,
+                Password = registerRequest.Password
+            };
+            var hashedPassword = _passwordHasher.HashPassword(user, registerRequest.Password);
             user.Password = hashedPassword;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -76,7 +80,7 @@ namespace WakeyWakeyBackendAPI.Controllers
             if (user == null) {
                 return NotFound("Couldn't find user with associated email.");
             }
-
+            
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
             return result == PasswordVerificationResult.Success ? Ok(result) : Unauthorized();
         }
