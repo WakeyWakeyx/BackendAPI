@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using WakeyWakeyBackendAPI.DTOs;
 using WakeyWakeyBackendAPI.Models;
 
@@ -70,7 +69,7 @@ namespace WakeyWakeyBackendAPI.Controllers
         {
             var user = new User { 
                 Email = registerRequest.Email,
-                Password = registerRequest.Password
+                Password = registerRequest.Password,
             };
             var hashedPassword = _passwordHasher.HashPassword(user, registerRequest.Password);
             user.Password = hashedPassword;
