@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace WakeyWakeyBackendAPI.Controllers
 
 
         // GET: api/<AuthController>/GetUsers
+        [Authorize]
         [HttpGet("getUsers")]
         public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers()
         {
@@ -41,6 +43,7 @@ namespace WakeyWakeyBackendAPI.Controllers
 
 
         //fetch user method
+        //[Authorize]
         //[HttpGet("fetchUser")]
         //public async Task<ActionResult<User>> FetchUser()
         //{
