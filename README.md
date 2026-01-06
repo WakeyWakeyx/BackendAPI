@@ -57,11 +57,10 @@ docker --version
 docker compose version
 ```
 
-###Getting the project setup
+### Getting the project setup
 - Clone the repo
 - Cd into the project
 - Run dotnet restore
 - run docker compose up --build to build the docker image
     To stop the project you just run: docker compose down
 - Then get the project setup in the database tool of your choice so that you can see the schema, the credentials are in the composer.yml file
-- 
