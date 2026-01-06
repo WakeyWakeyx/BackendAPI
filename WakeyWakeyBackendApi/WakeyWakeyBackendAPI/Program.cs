@@ -21,7 +21,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<PasswordHasher<User>>();
 
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

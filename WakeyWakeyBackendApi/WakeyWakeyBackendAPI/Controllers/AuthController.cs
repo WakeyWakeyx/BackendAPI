@@ -12,11 +12,11 @@ namespace WakeyWakeyBackendAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //here i am injecting the DB context into the controller
+        //here I am injecting the DB context into the controller
         private readonly AppDbContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
 
-        //here i am initializing the DB context via constructor injection
+        //here I am initializing the DB context via constructor injection
         public AuthController(AppDbContext context, PasswordHasher<User> passwordHasher)
         {
             _context = context;
@@ -27,11 +27,11 @@ namespace WakeyWakeyBackendAPI.Controllers
         // GET: api/<AuthController>/GetUsers
         [Authorize]
         [HttpGet("getUsers")]
-        public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UsersDto>>> GetUsers()
         {
             //will use EF core to pull the users from the DB 
             var users = await _context.Users
-            .Select(x => new UsersDTO
+            .Select(x => new UsersDto
             {
                 Id = x.Id,
                 Email = x.Email
@@ -53,7 +53,7 @@ namespace WakeyWakeyBackendAPI.Controllers
 
         // GET api/<AuthController.cs>/5
         [HttpGet("getUserEmail/{id}")]
-        public async Task<ActionResult<GetUserEmailDTO>> GetUserEmail(int id)
+        public async Task<ActionResult<GetUserEmailDto>> GetUserEmail(int id)
         {
             //will also query for the user from the DB using the id as the primary key 
             var result = await _context.Users.Where(u => u.Id == id).Select(x => x.Email).FirstOrDefaultAsync();
@@ -68,9 +68,10 @@ namespace WakeyWakeyBackendAPI.Controllers
 
         
         [HttpPost("create")]
-        public async Task<ActionResult<string>> Register([FromBody] RegisterUserDTO registerRequest)
+        public async Task<ActionResult<string>> Register([FromBody] RegisterUserDto registerRequest)
         {
             var user = new User { 
+                Name = registerRequest.Name,
                 Email = registerRequest.Email,
                 Password = registerRequest.Password,
             };
@@ -78,20 +79,24 @@ namespace WakeyWakeyBackendAPI.Controllers
             user.Password = hashedPassword;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-
-            return Ok(new { message = "User registered successfully" });
+            var result = new RegisterUserResponseDto()
+            {
+                Name = user.Name,
+                Email = user.Email
+            };
+            return Ok(result);
 
         }
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<bool>> Login([FromBody] LoginUserDTO request)
+        public async Task<ActionResult<bool>> Login([FromBody] LoginUserDto request)
         {
             var user = await _context.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (user == null) {
                 return NotFound("Couldn't find user with associated email.");
             }
-            
+            //realistically we would be using jwt tokens here and issuing a new token here when we see that they have signed in correctly.
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
             return result == PasswordVerificationResult.Success ? Ok(result) : Unauthorized();
         }
