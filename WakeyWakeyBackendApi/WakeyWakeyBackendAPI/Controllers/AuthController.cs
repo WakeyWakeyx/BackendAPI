@@ -98,12 +98,12 @@ namespace WakeyWakeyBackendAPI.Controllers
             if (user == null) {
                 return NotFound("Couldn't find user with associated email.");
             }
-            //realistically we would be using jwt tokens here and issuing a new token here when we see that they have signed in correctly.
-            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
-            if (result == PasswordVerificationResult.Failed) return Unauthorized();
             
-            var jwtToken = _jwtService.CreateToken(user);
-            return Ok(jwtToken);
+            // Return a new jwt token if credentials are correct
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
+            return result == PasswordVerificationResult.Failed 
+                ?  Unauthorized("Invalid credentials")
+                : Ok(_jwtService.CreateToken(user));
         }
 
         // DELETE api/<AuthController.cs>/5
