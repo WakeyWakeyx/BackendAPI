@@ -6,6 +6,9 @@ using WakeyWakeyBackendAPI.Models;
 
 namespace WakeyWakeyBackendAPI.Services;
 
+/// <summary>
+/// A simple utility service for producing JWT tokens. 
+/// </summary>
 public class JwtService
 {
     private readonly IConfiguration _config;
@@ -15,6 +18,11 @@ public class JwtService
         _config = config;
     }
     
+    /// <summary>
+    /// Creates a new JWT token for a given user.
+    /// </summary>
+    /// <param name="user">the user to generate a jwt token for.</param>
+    /// <returns>the jwt token as a string.</returns>
     public string CreateToken(User user)
     { 
         var secretKey = _config["Jwt:Secret"]!;

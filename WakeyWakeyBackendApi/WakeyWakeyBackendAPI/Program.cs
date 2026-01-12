@@ -10,7 +10,9 @@ using WakeyWakeyBackendAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ===== Services Config ===== //
+
+// Authentication & authorization services.
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
