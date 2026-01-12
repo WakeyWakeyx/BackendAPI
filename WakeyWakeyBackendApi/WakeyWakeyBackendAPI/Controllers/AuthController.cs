@@ -103,7 +103,7 @@ namespace WakeyWakeyBackendAPI.Controllers
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
             return result == PasswordVerificationResult.Failed 
                 ?  Unauthorized("Invalid credentials")
-                : Ok(_jwtService.CreateToken(user));
+                : Ok(new LoginUserResponseDto() {  JwtToken = _jwtService.CreateToken(user) } );
         }
 
         // DELETE api/<AuthController.cs>/5
