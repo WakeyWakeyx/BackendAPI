@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WakeyWakeyBackendAPI.Models.Attributes;
 
 namespace WakeyWakeyBackendAPI.Models
 {
@@ -6,9 +7,11 @@ namespace WakeyWakeyBackendAPI.Models
     {
         public int Id { get; set; }
         
+        [Encrypted]
         [Required(ErrorMessage = "Name is required")]
         public required string Name { get; set; }
 
+        [Encrypted]
         [Required(ErrorMessage ="Email is required")]
         [EmailAddress(ErrorMessage ="Invalid email format")]
         public required string Email { get; set; }
