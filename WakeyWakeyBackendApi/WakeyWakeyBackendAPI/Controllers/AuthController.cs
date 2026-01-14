@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WakeyWakeyBackendAPI.DTOs;
 using WakeyWakeyBackendAPI.Models;
+using WakeyWakeyBackendAPI.Services;
 
 namespace WakeyWakeyBackendAPI.Controllers
 {
@@ -15,14 +16,15 @@ namespace WakeyWakeyBackendAPI.Controllers
         //here I am injecting the DB context into the controller
         private readonly AppDbContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
+        private readonly JwtService _jwtService;
 
         //here I am initializing the DB context via constructor injection
-        public AuthController(AppDbContext context, PasswordHasher<User> passwordHasher)
+        public AuthController(AppDbContext context, PasswordHasher<User> passwordHasher, JwtService jwtService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _jwtService = jwtService;
         }
-
 
         // GET: api/<AuthController>/GetUsers
         [Authorize]
@@ -96,9 +98,12 @@ namespace WakeyWakeyBackendAPI.Controllers
             if (user == null) {
                 return NotFound("Couldn't find user with associated email.");
             }
-            //realistically we would be using jwt tokens here and issuing a new token here when we see that they have signed in correctly.
+            
+            // Return a new jwt token if credentials are correct
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
-            return result == PasswordVerificationResult.Success ? Ok(result) : Unauthorized();
+            return result == PasswordVerificationResult.Failed 
+                ?  Unauthorized("Invalid credentials")
+                : Ok(new LoginUserResponseDto() {  JwtToken = _jwtService.CreateToken(user) } );
         }
 
         // DELETE api/<AuthController.cs>/5
