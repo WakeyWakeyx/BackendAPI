@@ -46,9 +46,6 @@ builder.Services.AddOpenApi();
 //this is where I am adding the DB context 
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(builder.Environment.ContentRootPath)) // TODO: Use a better solution for key management
-    .SetApplicationName("WakeyWakeyBackendAPI");
 
 builder.Services.AddScoped<PasswordHasher<User>>();
 
