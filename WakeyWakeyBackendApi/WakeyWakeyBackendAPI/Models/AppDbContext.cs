@@ -25,5 +25,6 @@ namespace WakeyWakeyBackendAPI.Models
             base.OnModelCreating(modelBuilder);
             modelBuilder.UseEncryption(_encryptionProvider);
         }
+        public DbSet<SleepSession> SleepSessions { get; set; }
     }
 }
