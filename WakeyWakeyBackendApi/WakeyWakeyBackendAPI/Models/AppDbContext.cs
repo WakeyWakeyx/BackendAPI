@@ -1,15 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EntityFrameworkCore.EncryptColumn.Extension;
+using EntityFrameworkCore.EncryptColumn.Interfaces;
+using EntityFrameworkCore.EncryptColumn.Util;
+using Microsoft.EntityFrameworkCore;
 
 namespace WakeyWakeyBackendAPI.Models
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        private readonly IEncryptionProvider _encryptionProvider;
+        
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IConfiguration configuration): base(options)
         {
-
+            _encryptionProvider = new GenerateEncryptionProvider(configuration["Database:EncryptionKey"]);
         }
 
 
         public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.UseEncryption(_encryptionProvider);
+        }
     }
 }
