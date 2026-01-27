@@ -84,7 +84,8 @@ namespace WakeyWakeyBackendAPI.Controllers
             var result = new RegisterUserResponseDto()
             {
                 Name = user.Name,
-                Email = user.Email
+                Email = user.Email,
+                JwtToken = _jwtService.CreateToken(user)
             };
             return Ok(result);
 
