@@ -10,8 +10,12 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: Host=database;Port=5432;Database=postgres_container;Username=postgres;Password=postgres
-  
+      ConnectionStrings__DefaultConnection: Host=database;Port=5432;Database=${db_name};Username=${db_user};Password=${db_password}
+      Jwt__Secret: ${JWT_SECRET}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__ExpirationInMinutes: ${JWT_EXPIRATION}
+      Database__EncryptionKey: ${DB_ENCRYPTION_KEY}
   database:
     image: postgres:16
     healthcheck:
@@ -25,9 +29,9 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres_container
+      - POSTGRES_USER=${db_user}
+      - POSTGRES_PASSWORD=${db_password}
+      - POSTGRES_DB=${db_name}
 
 volumes:
   pgdata:
