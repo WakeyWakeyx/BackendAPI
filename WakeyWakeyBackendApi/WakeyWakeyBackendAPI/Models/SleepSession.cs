@@ -23,6 +23,6 @@ namespace WakeyWakeyBackendAPI.Models
         [Required]
         public required int SleepScore { get; set; }
         
-        public required User User { get; set; }
+        public virtual required User User { get; set; }
     }
 }
