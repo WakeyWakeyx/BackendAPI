@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WakeyWakeyBackendAPI.Models;
 
+// TODO: Check what other alarm data needs to be stored.
 /// <summary>
 /// Represents an active alarm as set by a specific user.
 /// </summary>
@@ -29,5 +30,5 @@ public class Alarm
     /// <summary>
     /// User navigation property.
     /// </summary>
-    public virtual required User User { get; set; }
+    public virtual User User { get; set; }
 }
