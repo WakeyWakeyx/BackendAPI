@@ -28,7 +28,7 @@ public class AlarmController
     {
         var alarms = await _context.Alarms
             .Where(alarm => alarm.UserId == userId)
-            .Select(alarm => new AlarmDto { WakeTime = alarm.WakeTime })
+            .Select(alarm => new AlarmDto { MinWakeTime = alarm.MinWakeTime })
             .ToListAsync();
         return alarms;
     }
@@ -40,7 +40,7 @@ public class AlarmController
     [Authorize]
     public async Task<ActionResult<AlarmDto>> CreateAlarm(int userId, [FromBody] AlarmDto alarm)
     {
-        var alarmEntity = new Alarm { UserId = userId, WakeTime = alarm.WakeTime};
+        var alarmEntity = new Alarm { UserId = userId, MinWakeTime = alarm.MinWakeTime, MaxWakeTime = alarm.MaxWakeTime };
         _context.Alarms.Add(alarmEntity);
         await _context.SaveChangesAsync();
         return alarm;

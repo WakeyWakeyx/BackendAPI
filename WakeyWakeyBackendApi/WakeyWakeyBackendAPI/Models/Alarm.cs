@@ -22,10 +22,15 @@ public class Alarm
     public int UserId { get; set; }
     
     /// <summary>
-    /// The time to wake the user at.
+    /// The minimum time to wake the user at.
     /// </summary>
     [Required]
-    public required DateTime WakeTime { get; set; }
+    public required DateTime MinWakeTime { get; set; }
+    
+    /// <summary>
+    /// The maximum time to wake the user at.
+    /// </summary>
+    public required DateTime MaxWakeTime { get; set; }
     
     /// <summary>
     /// User navigation property.
