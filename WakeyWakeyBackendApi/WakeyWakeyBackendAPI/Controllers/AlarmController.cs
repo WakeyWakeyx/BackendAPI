@@ -32,8 +32,12 @@ public class AlarmController : ControllerBase
             return Unauthorized();
         var alarms = await _context.Alarms
             .Where(alarm => alarm.UserId == userId.Value)
-            .Select(alarm => new AlarmDto { MinWakeTime = alarm.MinWakeTime })
-            .ToListAsync();
+            .Select(alarm => new AlarmDto
+            {
+                AlarmName = alarm.AlarmName,
+                EarliestWakeTime = alarm.EarliestWakeTime,
+                LatestWakeTime = alarm.LatestWakeTime
+            }).ToListAsync();
         return alarms;
     }
     
@@ -47,7 +51,13 @@ public class AlarmController : ControllerBase
         var userId = User.GetUserId();
         if (userId == null)
             return Unauthorized();
-        var alarmEntity = new Alarm { UserId = userId.Value, MinWakeTime = alarm.MinWakeTime, MaxWakeTime = alarm.MaxWakeTime };
+        var alarmEntity = new Alarm
+        {
+            UserId = userId.Value,
+            AlarmName = alarm.AlarmName,
+            EarliestWakeTime = alarm.EarliestWakeTime,
+            LatestWakeTime = alarm.LatestWakeTime
+        };
         _context.Alarms.Add(alarmEntity);
         await _context.SaveChangesAsync();
         return alarm;

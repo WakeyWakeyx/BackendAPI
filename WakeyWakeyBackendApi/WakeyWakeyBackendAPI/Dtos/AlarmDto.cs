@@ -2,7 +2,9 @@ namespace WakeyWakeyBackendAPI.Dtos;
 
 public class AlarmDto
 {
-    public DateTime MinWakeTime { get; set; }
+    public string AlarmName { get; set; } = string.Empty;
     
-    public DateTime MaxWakeTime { get; set; }
+    public DateTime EarliestWakeTime { get; set; }
+    
+    public DateTime LatestWakeTime { get; set; }
 }
