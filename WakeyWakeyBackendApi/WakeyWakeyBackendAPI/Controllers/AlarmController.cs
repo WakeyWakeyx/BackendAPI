@@ -36,7 +36,8 @@ public class AlarmController : ControllerBase
             {
                 AlarmName = alarm.AlarmName,
                 EarliestWakeTime = alarm.EarliestWakeTime,
-                LatestWakeTime = alarm.LatestWakeTime
+                LatestWakeTime = alarm.LatestWakeTime,
+                RepeatingDays = alarm.RepeatingDays
             }).ToListAsync();
         return alarms;
     }
@@ -56,7 +57,8 @@ public class AlarmController : ControllerBase
             UserId = userId.Value,
             AlarmName = alarm.AlarmName,
             EarliestWakeTime = alarm.EarliestWakeTime,
-            LatestWakeTime = alarm.LatestWakeTime
+            LatestWakeTime = alarm.LatestWakeTime,
+            RepeatingDays = alarm.RepeatingDays
         };
         _context.Alarms.Add(alarmEntity);
         await _context.SaveChangesAsync();

@@ -1,3 +1,5 @@
+using WakeyWakeyBackendAPI.Models;
+
 namespace WakeyWakeyBackendAPI.Dtos;
 
 public class AlarmDto
@@ -7,4 +9,6 @@ public class AlarmDto
     public DateTime EarliestWakeTime { get; set; }
     
     public DateTime LatestWakeTime { get; set; }
+    
+    public WeekDays RepeatingDays { get; set; } = WeekDays.None;
 }

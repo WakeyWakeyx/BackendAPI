@@ -37,6 +37,11 @@ public class Alarm
     /// The maximum time to wake the user at.
     /// </summary>
     public required DateTime LatestWakeTime { get; set; }
+
+    /// <summary>
+    /// The week days in which this alarm may repeat (optional).
+    /// </summary>
+    public WeekDays RepeatingDays { get; set; } = WeekDays.None;
     
     /// <summary>
     /// User navigation property.
