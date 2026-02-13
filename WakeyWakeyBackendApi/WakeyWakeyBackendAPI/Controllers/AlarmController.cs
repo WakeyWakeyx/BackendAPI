@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WakeyWakeyBackendAPI.Dtos;
 using WakeyWakeyBackendAPI.Models;
+using WakeyWakeyBackendAPI.Utils;
 
 namespace WakeyWakeyBackendAPI.Controllers;
 
 // TODO: Refine user & alarm verification.
 /// <summary>Handles management of alarms set by users.</summary>
-[Route("api/{userId:int}/alarms")]
+[Route("api/[controller]")]
 [ApiController]
-public class AlarmController
+public class AlarmController : ControllerBase
 {
     private readonly AppDbContext _context;
     
@@ -24,10 +25,13 @@ public class AlarmController
     /// <returns>A list containing all alarms set by `userId`.</returns>
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<List<AlarmDto>>> GetAlarms(int userId)
+    public async Task<ActionResult<List<AlarmDto>>> GetAlarms()
     {
+        var userId = User.GetUserId();
+        if (userId == null)
+            return Unauthorized();
         var alarms = await _context.Alarms
-            .Where(alarm => alarm.UserId == userId)
+            .Where(alarm => alarm.UserId == userId.Value)
             .Select(alarm => new AlarmDto { MinWakeTime = alarm.MinWakeTime })
             .ToListAsync();
         return alarms;
@@ -38,9 +42,12 @@ public class AlarmController
     /// <param name="alarm">The alarm details provided by user.</param>
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<AlarmDto>> CreateAlarm(int userId, [FromBody] AlarmDto alarm)
+    public async Task<ActionResult<AlarmDto>> CreateAlarm([FromBody] AlarmDto alarm)
     {
-        var alarmEntity = new Alarm { UserId = userId, MinWakeTime = alarm.MinWakeTime, MaxWakeTime = alarm.MaxWakeTime };
+        var userId = User.GetUserId();
+        if (userId == null)
+            return Unauthorized();
+        var alarmEntity = new Alarm { UserId = userId.Value, MinWakeTime = alarm.MinWakeTime, MaxWakeTime = alarm.MaxWakeTime };
         _context.Alarms.Add(alarmEntity);
         await _context.SaveChangesAsync();
         return alarm;
