@@ -64,4 +64,26 @@ public class AlarmController : ControllerBase
         await _context.SaveChangesAsync();
         return alarm;
     }
+
+    /// <summary>Deletes an alarm previously created by a user.</summary>
+    /// <param name="alarmId">The unique id of the alarm</param>
+    /// <returns>OK if the alarm was found and successfully deleted.</returns>
+    [Authorize]
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAlarm([FromQuery] int alarmId)
+    {
+        var userId = User.GetUserId();
+        if (userId == null)
+            return Unauthorized();
+        // Try finding the alarm
+        var toDelete = await _context.Alarms
+            .Where(alarm => alarm.AlarmId == alarmId && alarm.UserId == userId)
+            .FirstOrDefaultAsync();
+        if (toDelete == null)
+            return NotFound();
+        // Then delete it
+        _context.Alarms.Remove(toDelete);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }
