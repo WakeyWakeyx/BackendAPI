@@ -25,5 +25,22 @@ public class SleepSession
     [Required]
     public required DateTime WakeTime { get; set; }
     
+    /// <summary>The duration of the lightest sleep stages</summary>
+    [Required]
+    public required TimeSpan LightSleepDuration { get; set; }
+    
+    /// <summary>The duration of the rem sleep stages.</summary>
+    [Required]
+    public required TimeSpan RemSleepDuration { get; set; }
+    
+    /// <summary>The duration of the deepest sleep stages.</summary>
+    [Required]
+    public required TimeSpan DeepSleepDuration { get; set; }
+    
+    /// <summary>The user's average heart rate during sleep.</summary>
+    [Required]
+    [Range(0, int.MaxValue)]
+    public required int AverageHeartRate { get; set; }
+    
     public virtual User User { get; set; }
 }
