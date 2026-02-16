@@ -86,6 +86,8 @@ public class AlarmController : ControllerBase
         // Update values only if explicitly provided.
         if (alarmDto.AlarmName != null)
             alarmEntity.AlarmName = alarmDto.AlarmName;
+        if (alarmDto.IsEnabled != null)
+            alarmEntity.IsEnabled = alarmDto.IsEnabled.Value;
         if (alarmDto.EarliestWakeTime != null)
             alarmEntity.EarliestWakeTime = alarmDto.EarliestWakeTime.Value;
         if (alarmDto.LatestWakeTime != null)
@@ -131,6 +133,7 @@ public class AlarmController : ControllerBase
         return new ExistingAlarmDto()
         {
             AlarmName = alarm.AlarmName,
+            IsEnabled = alarm.IsEnabled,
             EarliestWakeTime = alarm.EarliestWakeTime,
             LatestWakeTime = alarm.LatestWakeTime,
             RepeatingDays = alarm.RepeatingDays

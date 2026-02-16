@@ -28,6 +28,11 @@ public class Alarm
     public string AlarmName { get; set; } = string.Empty;
     
     /// <summary>
+    /// Is this alarm currently enabled (i.e. allowed to go off)?
+    /// </summary>
+    public bool IsEnabled { get; set; } = true;
+    
+    /// <summary>
     /// The minimum time to wake the user at.
     /// </summary>
     [Required]
