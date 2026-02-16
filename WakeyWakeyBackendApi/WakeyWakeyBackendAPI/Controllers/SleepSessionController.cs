@@ -34,7 +34,7 @@ public class SleepSessionController : ControllerBase
         // Retrieve sleep session records.
         var sleepSessions = await _context.SleepSessions
             .Where(session => session.UserId == userId)
-            .Select(session => new SleepSessionResponseDto(session.BedTime, session.WakeTime, session.SleepScore))
+            .Select(session => new SleepSessionResponseDto(session.BedTime, session.WakeTime))
             .ToListAsync();
         return Ok(sleepSessions);
     }
