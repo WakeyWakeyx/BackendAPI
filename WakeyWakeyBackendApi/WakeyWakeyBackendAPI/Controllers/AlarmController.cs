@@ -23,6 +23,8 @@ public class AlarmController : ControllerBase
     /// <summary>Returns a specific alarm with a given id.</summary>
     /// <param name="alarmId">the numeric id of the alarm.</param>
     /// <returns>The alarm details, if any.</returns>
+    [Authorize]
+    [HttpGet("getAlarm")]
     public async Task<ActionResult<AlarmDto>> GetAlarm([FromQuery] int alarmId)
     {
         var userId = User.GetUserId();
@@ -36,8 +38,8 @@ public class AlarmController : ControllerBase
 
     /// <summary>Returns all alarms currently set by the given user.</summary>
     /// <returns>A list containing all alarms set by `userId`.</returns>
-    [HttpGet]
     [Authorize]
+    [HttpGet("getAlarms")]
     public async Task<ActionResult<List<AlarmDto>>> GetAlarms()
     {
         var userId = User.GetUserId();
@@ -52,8 +54,8 @@ public class AlarmController : ControllerBase
     
     /// <summary>Registers a new alarm set by a user.</summary>
     /// <param name="alarm">The alarm details provided by user.</param>
-    [HttpPost]
     [Authorize]
+    [HttpPost("createAlarm")]
     public async Task<ActionResult<AlarmDto>> CreateAlarm([FromBody] AlarmDto alarm)
     {
         var userId = User.GetUserId();
@@ -68,7 +70,7 @@ public class AlarmController : ControllerBase
     /// <param name="alarmId">The unique id of the alarm</param>
     /// <returns>OK if the alarm was found and successfully deleted.</returns>
     [Authorize]
-    [HttpDelete]
+    [HttpDelete("deleteAlarm")]
     public async Task<ActionResult> DeleteAlarm([FromQuery] int alarmId)
     {
         var userId = User.GetUserId();
