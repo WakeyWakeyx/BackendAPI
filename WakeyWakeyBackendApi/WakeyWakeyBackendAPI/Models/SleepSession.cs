@@ -25,9 +25,5 @@ public class SleepSession
     [Required]
     public required DateTime WakeTime { get; set; }
     
-    /// <summary>The sleep score assigned to this sleep session.</summary>
-    [Required]
-    public required int SleepScore { get; set; }
-    
     public virtual User User { get; set; }
 }
