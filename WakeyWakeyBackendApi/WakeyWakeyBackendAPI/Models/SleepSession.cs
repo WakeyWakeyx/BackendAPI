@@ -19,11 +19,11 @@ public class SleepSession
     
     /// <summary>The bedtime of this sleep session.</summary>
     [Required]
-    public required DateTime StartTime { get; set; }
+    public required DateTime BedTime { get; set; }
     
     /// <summary>The wake time of this sleep session.</summary>
     [Required]
-    public required DateTime EndTime { get; set; }
+    public required DateTime WakeTime { get; set; }
     
     /// <summary>The sleep score assigned to this sleep session.</summary>
     [Required]
