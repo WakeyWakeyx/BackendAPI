@@ -61,9 +61,40 @@ public class AlarmController : ControllerBase
         var userId = User.GetUserId();
         if (userId == null)
             return Unauthorized();
-        _context.Alarms.Add(CreateAlarmEntity(alarm));
+        _context.Alarms.Add(CreateAlarmEntity(userId.Value, alarm));
         await _context.SaveChangesAsync();
         return alarm;
+    }
+
+    /// <summary>Updates attributes of an existing alarm with those provided in the request body.</summary>
+    /// <param name="alarmId">The unique identifier of the alarm.</param>
+    /// <param name="alarmDto">The new alarm details to set.</param>
+    [Authorize]
+    [HttpPatch("updateAlarm")]
+    public async Task<ActionResult> UpdateAlarm([FromQuery] int alarmId, [FromBody] UpdateAlarmDto alarmDto)
+    {
+        // TODO: Need to remove these ugly things.
+        var userId = User.GetUserId();
+        if (userId == null)
+            return Unauthorized();
+        
+        // Fetch the requested alarm.
+        var alarmEntity = await GetAlarmEntity(userId.Value, alarmId);
+        if (alarmEntity == null)
+            return NotFound();
+        
+        // Update values only if explicitly provided.
+        if (alarmDto.AlarmName != null)
+            alarmEntity.AlarmName = alarmDto.AlarmName;
+        if (alarmDto.EarliestWakeTime != null)
+            alarmEntity.EarliestWakeTime = alarmDto.EarliestWakeTime.Value;
+        if (alarmDto.LatestWakeTime != null)
+            alarmEntity.LatestWakeTime = alarmDto.LatestWakeTime.Value;
+        if (alarmDto.RepeatingDays != null)
+            alarmEntity.RepeatingDays = alarmDto.RepeatingDays.Value;
+        _context.Alarms.Update(alarmEntity);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     /// <summary>Deletes an alarm previously created by a user.</summary>
@@ -106,10 +137,11 @@ public class AlarmController : ControllerBase
         };
     }
 
-    private static Alarm CreateAlarmEntity(AlarmDto alarm)
+    private static Alarm CreateAlarmEntity(int userId, AlarmDto alarm)
     {
         return new Alarm
         {
+            UserId = userId,
             AlarmName = alarm.AlarmName,
             EarliestWakeTime = alarm.EarliestWakeTime,
             LatestWakeTime = alarm.LatestWakeTime,

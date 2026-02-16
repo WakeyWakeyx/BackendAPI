@@ -12,3 +12,11 @@ public class AlarmDto
     
     public WeekDays RepeatingDays { get; set; } = WeekDays.None;
 }
+
+public class UpdateAlarmDto
+{
+    public string? AlarmName { get; set; } = null;
+    public DateTime? EarliestWakeTime { get; set; } = null;
+    public DateTime? LatestWakeTime { get; set; } = null;
+    public WeekDays? RepeatingDays { get; set; } = null;
+}
