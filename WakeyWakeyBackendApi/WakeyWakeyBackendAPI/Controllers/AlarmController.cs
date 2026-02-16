@@ -7,7 +7,7 @@ using WakeyWakeyBackendAPI.Utils;
 
 namespace WakeyWakeyBackendAPI.Controllers;
 
-// TODO: Refine user & alarm verification.
+// TODO: Cleanup code
 /// <summary>Handles management of alarms set by users.</summary>
 [Route("api/[controller]")]
 [ApiController]
@@ -18,6 +18,33 @@ public class AlarmController : ControllerBase
     public AlarmController(AppDbContext context)
     {
         _context = context;
+    }
+
+    /// <summary>Returns a specific alarm with a given id.</summary>
+    /// <param name="alarmId">the numeric id of the alarm.</param>
+    /// <returns>The alarm details, if any.</returns>
+    public async Task<ActionResult<AlarmDto>> GetAlarm([FromQuery] int alarmId)
+    {
+        var userId = User.GetUserId();
+        if (userId == null)
+            return Unauthorized();
+        var alarm = await _GetAlarm(userId.Value, alarmId);
+        if (alarm == null)
+            return NotFound();
+        return new AlarmDto()
+        {
+            AlarmName = alarm.AlarmName,
+            EarliestWakeTime = alarm.EarliestWakeTime,
+            LatestWakeTime = alarm.LatestWakeTime,
+            RepeatingDays = alarm.RepeatingDays
+        };
+    }
+
+    private async Task<Alarm?> _GetAlarm(int userId, int alarmId)
+    {
+        return await _context.Alarms
+            .Where(alarm => alarm.UserId == userId && alarm.AlarmId == alarmId)
+            .FirstOrDefaultAsync();
     }
 
     /// <summary>Returns all alarms currently set by the given user.</summary>
