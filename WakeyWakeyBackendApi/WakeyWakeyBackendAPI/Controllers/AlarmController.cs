@@ -25,7 +25,7 @@ public class AlarmController : ControllerBase
     /// <returns>The alarm details, if any.</returns>
     [Authorize]
     [HttpGet("getAlarm")]
-    public async Task<ActionResult<AlarmDto>> GetAlarm([FromQuery] int alarmId)
+    public async Task<ActionResult<ExistingAlarmDto>> GetAlarm([FromQuery] int alarmId)
     {
         var userId = User.GetUserId();
         if (userId == null)
@@ -40,7 +40,7 @@ public class AlarmController : ControllerBase
     /// <returns>A list containing all alarms set by `userId`.</returns>
     [Authorize]
     [HttpGet("getAlarms")]
-    public async Task<ActionResult<List<AlarmDto>>> GetAlarms()
+    public async Task<ActionResult<List<ExistingAlarmDto>>> GetAlarms()
     {
         var userId = User.GetUserId();
         if (userId == null)
@@ -53,17 +53,17 @@ public class AlarmController : ControllerBase
     }
     
     /// <summary>Registers a new alarm set by a user.</summary>
-    /// <param name="alarm">The alarm details provided by user.</param>
+    /// <param name="alarmDto">The alarm details provided by user.</param>
     [Authorize]
     [HttpPost("createAlarm")]
-    public async Task<ActionResult<AlarmDto>> CreateAlarm([FromBody] AlarmDto alarm)
+    public async Task<ActionResult<FreshAlarmDto>> CreateAlarm([FromBody] FreshAlarmDto alarmDto)
     {
         var userId = User.GetUserId();
         if (userId == null)
             return Unauthorized();
-        _context.Alarms.Add(CreateAlarmEntity(userId.Value, alarm));
+        _context.Alarms.Add(CreateAlarmEntity(userId.Value, alarmDto));
         await _context.SaveChangesAsync();
-        return alarm;
+        return alarmDto;
     }
 
     /// <summary>Updates attributes of an existing alarm with those provided in the request body.</summary>
@@ -71,7 +71,7 @@ public class AlarmController : ControllerBase
     /// <param name="alarmDto">The new alarm details to set.</param>
     [Authorize]
     [HttpPatch("updateAlarm")]
-    public async Task<ActionResult> UpdateAlarm([FromQuery] int alarmId, [FromBody] UpdateAlarmDto alarmDto)
+    public async Task<ActionResult> UpdateAlarm([FromQuery] int alarmId, [FromBody] UpdatedAlarmDto alarmDto)
     {
         // TODO: Need to remove these ugly things.
         var userId = User.GetUserId();
@@ -126,9 +126,9 @@ public class AlarmController : ControllerBase
             .FirstOrDefaultAsync();
     }
 
-    private static AlarmDto CreateAlarmDto(Alarm alarm)
+    private static ExistingAlarmDto CreateAlarmDto(Alarm alarm)
     {
-        return new AlarmDto()
+        return new ExistingAlarmDto()
         {
             AlarmName = alarm.AlarmName,
             EarliestWakeTime = alarm.EarliestWakeTime,
@@ -137,15 +137,15 @@ public class AlarmController : ControllerBase
         };
     }
 
-    private static Alarm CreateAlarmEntity(int userId, AlarmDto alarm)
+    private static Alarm CreateAlarmEntity(int userId, FreshAlarmDto alarmDto)
     {
         return new Alarm
         {
             UserId = userId,
-            AlarmName = alarm.AlarmName,
-            EarliestWakeTime = alarm.EarliestWakeTime,
-            LatestWakeTime = alarm.LatestWakeTime,
-            RepeatingDays = alarm.RepeatingDays
+            AlarmName = alarmDto.AlarmName,
+            EarliestWakeTime = alarmDto.EarliestWakeTime,
+            LatestWakeTime = alarmDto.LatestWakeTime,
+            RepeatingDays = alarmDto.RepeatingDays
         };
     }
 }
