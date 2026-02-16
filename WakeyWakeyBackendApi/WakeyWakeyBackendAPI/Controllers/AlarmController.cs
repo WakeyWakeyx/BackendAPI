@@ -28,27 +28,13 @@ public class AlarmController : ControllerBase
         var userId = User.GetUserId();
         if (userId == null)
             return Unauthorized();
-        var alarm = await _GetAlarm(userId.Value, alarmId);
+        var alarm = await GetAlarmEntity(userId.Value, alarmId);
         if (alarm == null)
             return NotFound();
-        return new AlarmDto()
-        {
-            AlarmName = alarm.AlarmName,
-            EarliestWakeTime = alarm.EarliestWakeTime,
-            LatestWakeTime = alarm.LatestWakeTime,
-            RepeatingDays = alarm.RepeatingDays
-        };
-    }
-
-    private async Task<Alarm?> _GetAlarm(int userId, int alarmId)
-    {
-        return await _context.Alarms
-            .Where(alarm => alarm.UserId == userId && alarm.AlarmId == alarmId)
-            .FirstOrDefaultAsync();
+        return CreateAlarmDto(alarm);
     }
 
     /// <summary>Returns all alarms currently set by the given user.</summary>
-    /// <param name="userId">The unique id of the user.</param>
     /// <returns>A list containing all alarms set by `userId`.</returns>
     [HttpGet]
     [Authorize]
@@ -59,18 +45,12 @@ public class AlarmController : ControllerBase
             return Unauthorized();
         var alarms = await _context.Alarms
             .Where(alarm => alarm.UserId == userId.Value)
-            .Select(alarm => new AlarmDto
-            {
-                AlarmName = alarm.AlarmName,
-                EarliestWakeTime = alarm.EarliestWakeTime,
-                LatestWakeTime = alarm.LatestWakeTime,
-                RepeatingDays = alarm.RepeatingDays
-            }).ToListAsync();
+            .Select(alarm => CreateAlarmDto(alarm))
+            .ToListAsync();
         return alarms;
     }
     
     /// <summary>Registers a new alarm set by a user.</summary>
-    /// <param name="userId">The unique id of the user.</param>
     /// <param name="alarm">The alarm details provided by user.</param>
     [HttpPost]
     [Authorize]
@@ -79,15 +59,7 @@ public class AlarmController : ControllerBase
         var userId = User.GetUserId();
         if (userId == null)
             return Unauthorized();
-        var alarmEntity = new Alarm
-        {
-            UserId = userId.Value,
-            AlarmName = alarm.AlarmName,
-            EarliestWakeTime = alarm.EarliestWakeTime,
-            LatestWakeTime = alarm.LatestWakeTime,
-            RepeatingDays = alarm.RepeatingDays
-        };
-        _context.Alarms.Add(alarmEntity);
+        _context.Alarms.Add(CreateAlarmEntity(alarm));
         await _context.SaveChangesAsync();
         return alarm;
     }
@@ -112,5 +84,34 @@ public class AlarmController : ControllerBase
         _context.Alarms.Remove(toDelete);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+    
+    private async Task<Alarm?> GetAlarmEntity(int userId, int alarmId)
+    {
+        return await _context.Alarms
+            .Where(alarm => alarm.UserId == userId && alarm.AlarmId == alarmId)
+            .FirstOrDefaultAsync();
+    }
+
+    private static AlarmDto CreateAlarmDto(Alarm alarm)
+    {
+        return new AlarmDto()
+        {
+            AlarmName = alarm.AlarmName,
+            EarliestWakeTime = alarm.EarliestWakeTime,
+            LatestWakeTime = alarm.LatestWakeTime,
+            RepeatingDays = alarm.RepeatingDays
+        };
+    }
+
+    private static Alarm CreateAlarmEntity(AlarmDto alarm)
+    {
+        return new Alarm
+        {
+            AlarmName = alarm.AlarmName,
+            EarliestWakeTime = alarm.EarliestWakeTime,
+            LatestWakeTime = alarm.LatestWakeTime,
+            RepeatingDays = alarm.RepeatingDays
+        };
     }
 }
