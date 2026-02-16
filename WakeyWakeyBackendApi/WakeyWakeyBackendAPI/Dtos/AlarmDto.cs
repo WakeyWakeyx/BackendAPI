@@ -9,10 +9,10 @@ public class FreshAlarmDto
     public string AlarmName { get; set; } = string.Empty;
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
-    public required DateTime EarliestWakeTime { get; set; }
+    public required TimeOnly EarliestWakeTime { get; set; }
     
     /// <summary>The latest possible time that the alarm should activate at.</summary>
-    public required DateTime LatestWakeTime { get; set; }
+    public required TimeOnly LatestWakeTime { get; set; }
     
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
     public WeekDays RepeatingDays { get; set; } = WeekDays.None;
@@ -28,10 +28,10 @@ public class ExistingAlarmDto
     public required bool IsEnabled { get; set; }
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
-    public required DateTime EarliestWakeTime { get; set; }
+    public required TimeOnly EarliestWakeTime { get; set; }
     
     /// <summary>The latest possible time that the alarm should activate at.</summary>
-    public required DateTime LatestWakeTime { get; set; }
+    public required TimeOnly LatestWakeTime { get; set; }
     
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
     public required WeekDays RepeatingDays { get; set; }
@@ -47,10 +47,10 @@ public class UpdatedAlarmDto
     public bool? IsEnabled { get; set; } = null;
     
     /// <summary>The new earliest possible time that the alarm should activate at.</summary>
-    public DateTime? EarliestWakeTime { get; set; } = null;
+    public TimeOnly? EarliestWakeTime { get; set; } = null;
     
     /// <summary>The new latest possible time that the alarm should activate at.</summary>
-    public DateTime? LatestWakeTime { get; set; } = null;
+    public TimeOnly? LatestWakeTime { get; set; } = null;
     
     /// <summary>The new weekdays on which this alarm can activate, if any.</summary>
     public WeekDays? RepeatingDays { get; set; } = null;

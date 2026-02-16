@@ -24,10 +24,10 @@ public class Alarm
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
     [Required]
-    public required DateTime EarliestWakeTime { get; set; }
+    public required TimeOnly EarliestWakeTime { get; set; }
     
     /// <summary>The latest possible time that the alarm should activate at.</summary>
-    public required DateTime LatestWakeTime { get; set; }
+    public required TimeOnly LatestWakeTime { get; set; }
 
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
     public WeekDays RepeatingDays { get; set; } = WeekDays.None;
