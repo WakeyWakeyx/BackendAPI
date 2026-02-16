@@ -130,6 +130,7 @@ public class AlarmController : ControllerBase
     {
         return new ExistingAlarmDto()
         {
+            Id = alarm.Id,
             Name = alarm.Name,
             Enabled = alarm.Enabled,
             EarliestWakeTime = alarm.EarliestWakeTime,

@@ -21,6 +21,8 @@ public class FreshAlarmDto
 /// <summary>Holds the details of a previously-created alarm.</summary>
 public class ExistingAlarmDto
 {
+    public required int Id { get; set; }
+    
     /// <summary>The name of the alarm, if any.</summary>
     public required string Name { get; set; }
     
