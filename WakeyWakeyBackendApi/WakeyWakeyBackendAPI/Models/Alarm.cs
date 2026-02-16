@@ -9,7 +9,7 @@ public class Alarm
 {
     /// <summary>The unique identifier of this alarm.</summary>
     [Key]
-    public int AlarmId { get; set; }
+    public int Id { get; set; }
     
     /// <summary>The unique identifier of the user who set this alarm.</summary>
     [ForeignKey(nameof(User))]
@@ -17,10 +17,10 @@ public class Alarm
     
     /// <summary>The name of the alarm, if any.</summary>
     [MaxLength(32)]
-    public string AlarmName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     
     /// <summary>Is this alarm currently enabled?</summary>
-    public bool IsEnabled { get; set; } = true;
+    public bool Enabled { get; set; } = true;
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
     [Required]
@@ -30,7 +30,7 @@ public class Alarm
     public required TimeOnly LatestWakeTime { get; set; }
 
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
-    public WeekDays RepeatingDays { get; set; } = WeekDays.None;
+    public WeekDays DaysToRepeat { get; set; } = WeekDays.None;
     
     /// <summary>User navigation property.</summary>
     public virtual User User { get; set; }

@@ -84,16 +84,16 @@ public class AlarmController : ControllerBase
             return NotFound();
         
         // Update values only if explicitly provided.
-        if (alarmDto.AlarmName != null)
-            alarmEntity.AlarmName = alarmDto.AlarmName;
-        if (alarmDto.IsEnabled != null)
-            alarmEntity.IsEnabled = alarmDto.IsEnabled.Value;
+        if (alarmDto.Name != null)
+            alarmEntity.Name = alarmDto.Name;
+        if (alarmDto.Enabled != null)
+            alarmEntity.Enabled = alarmDto.Enabled.Value;
         if (alarmDto.EarliestWakeTime != null)
             alarmEntity.EarliestWakeTime = alarmDto.EarliestWakeTime.Value;
         if (alarmDto.LatestWakeTime != null)
             alarmEntity.LatestWakeTime = alarmDto.LatestWakeTime.Value;
-        if (alarmDto.RepeatingDays != null)
-            alarmEntity.RepeatingDays = alarmDto.RepeatingDays.Value;
+        if (alarmDto.DaysToRepeat != null)
+            alarmEntity.DaysToRepeat = alarmDto.DaysToRepeat.Value;
         _context.Alarms.Update(alarmEntity);
         await _context.SaveChangesAsync();
         return Ok();
@@ -122,7 +122,7 @@ public class AlarmController : ControllerBase
     private async Task<Alarm?> GetAlarmEntity(int userId, int alarmId)
     {
         return await _context.Alarms
-            .Where(alarm => alarm.UserId == userId && alarm.AlarmId == alarmId)
+            .Where(alarm => alarm.UserId == userId && alarm.Id == alarmId)
             .FirstOrDefaultAsync();
     }
 
@@ -130,11 +130,11 @@ public class AlarmController : ControllerBase
     {
         return new ExistingAlarmDto()
         {
-            AlarmName = alarm.AlarmName,
-            IsEnabled = alarm.IsEnabled,
+            Name = alarm.Name,
+            Enabled = alarm.Enabled,
             EarliestWakeTime = alarm.EarliestWakeTime,
             LatestWakeTime = alarm.LatestWakeTime,
-            RepeatingDays = alarm.RepeatingDays
+            DaysToRepeat = alarm.DaysToRepeat
         };
     }
 
@@ -143,10 +143,10 @@ public class AlarmController : ControllerBase
         return new Alarm
         {
             UserId = userId,
-            AlarmName = alarmDto.AlarmName,
+            Name = alarmDto.Name,
             EarliestWakeTime = alarmDto.EarliestWakeTime,
             LatestWakeTime = alarmDto.LatestWakeTime,
-            RepeatingDays = alarmDto.RepeatingDays
+            DaysToRepeat = alarmDto.DaysToRepeat
         };
     }
 }

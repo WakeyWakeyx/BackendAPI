@@ -6,7 +6,7 @@ namespace WakeyWakeyBackendAPI.Dtos;
 public class FreshAlarmDto
 {
     /// <summary>The name of the alarm, if any.</summary>
-    public string AlarmName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
     public required TimeOnly EarliestWakeTime { get; set; }
@@ -15,17 +15,17 @@ public class FreshAlarmDto
     public required TimeOnly LatestWakeTime { get; set; }
     
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
-    public WeekDays RepeatingDays { get; set; } = WeekDays.None;
+    public WeekDays DaysToRepeat { get; set; } = WeekDays.None;
 }
 
 /// <summary>Holds the details of a previously-created alarm.</summary>
 public class ExistingAlarmDto
 {
     /// <summary>The name of the alarm, if any.</summary>
-    public required string AlarmName { get; set; }
+    public required string Name { get; set; }
     
     /// <summary>Is this alarm currently enabled?</summary>
-    public required bool IsEnabled { get; set; }
+    public required bool Enabled { get; set; }
     
     /// <summary>The earliest possible time that the alarm should activate at.</summary>
     public required TimeOnly EarliestWakeTime { get; set; }
@@ -34,17 +34,17 @@ public class ExistingAlarmDto
     public required TimeOnly LatestWakeTime { get; set; }
     
     /// <summary>The weekdays on which this alarm can activate, if any.</summary>
-    public required WeekDays RepeatingDays { get; set; }
+    public required WeekDays DaysToRepeat { get; set; }
 }
 
 /// <summary>Holds the details to update in an existing alarm.</summary>
 public class UpdatedAlarmDto
 {
     /// <summary>The new name of the alarm, if any.</summary>
-    public string? AlarmName { get; set; } = null;
+    public string? Name { get; set; } = null;
     
     /// <summary>Is this alarm currently enabled?</summary>
-    public bool? IsEnabled { get; set; } = null;
+    public bool? Enabled { get; set; } = null;
     
     /// <summary>The new earliest possible time that the alarm should activate at.</summary>
     public TimeOnly? EarliestWakeTime { get; set; } = null;
@@ -53,5 +53,5 @@ public class UpdatedAlarmDto
     public TimeOnly? LatestWakeTime { get; set; } = null;
     
     /// <summary>The new weekdays on which this alarm can activate, if any.</summary>
-    public WeekDays? RepeatingDays { get; set; } = null;
+    public WeekDays? DaysToRepeat { get; set; } = null;
 }
