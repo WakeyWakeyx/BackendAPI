@@ -110,9 +110,7 @@ public class AlarmController : ControllerBase
         if (userId == null)
             return Unauthorized();
         // Try finding the alarm
-        var toDelete = await _context.Alarms
-            .Where(alarm => alarm.AlarmId == alarmId && alarm.UserId == userId)
-            .FirstOrDefaultAsync();
+        var toDelete = await GetAlarmEntity(userId.Value, alarmId);
         if (toDelete == null)
             return NotFound();
         // Then delete it

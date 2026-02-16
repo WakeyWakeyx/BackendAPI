@@ -4,52 +4,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WakeyWakeyBackendAPI.Models;
 
 // TODO: Check what other alarm data needs to be stored.
-/// <summary>
-/// Represents an active alarm as set by a specific user.
-/// </summary>
+/// <summary>Represents an active alarm as set by a specific user.</summary>
 public class Alarm
 {
-    /// <summary>
-    /// The unique identifier of this alarm.
-    /// </summary>
+    /// <summary>The unique identifier of this alarm.</summary>
     [Key]
     public int AlarmId { get; set; }
     
-    /// <summary>
-    /// the unique identifier of the user who set this alarm.
-    /// </summary>
+    /// <summary>The unique identifier of the user who set this alarm.</summary>
     [ForeignKey(nameof(User))]
     public int UserId { get; set; }
     
-    /// <summary>
-    /// The name of this alarm (optional).
-    /// </summary>
+    /// <summary>The name of the alarm, if any.</summary>
     [MaxLength(32)]
     public string AlarmName { get; set; } = string.Empty;
     
-    /// <summary>
-    /// Is this alarm currently enabled (i.e. allowed to go off)?
-    /// </summary>
+    /// <summary>Is this alarm currently enabled?</summary>
     public bool IsEnabled { get; set; } = true;
     
-    /// <summary>
-    /// The minimum time to wake the user at.
-    /// </summary>
+    /// <summary>The earliest possible time that the alarm should activate at.</summary>
     [Required]
     public required DateTime EarliestWakeTime { get; set; }
     
-    /// <summary>
-    /// The maximum time to wake the user at.
-    /// </summary>
+    /// <summary>The latest possible time that the alarm should activate at.</summary>
     public required DateTime LatestWakeTime { get; set; }
 
-    /// <summary>
-    /// The week days in which this alarm may repeat (optional).
-    /// </summary>
+    /// <summary>The weekdays on which this alarm can activate, if any.</summary>
     public WeekDays RepeatingDays { get; set; } = WeekDays.None;
     
-    /// <summary>
-    /// User navigation property.
-    /// </summary>
+    /// <summary>User navigation property.</summary>
     public virtual User User { get; set; }
 }
