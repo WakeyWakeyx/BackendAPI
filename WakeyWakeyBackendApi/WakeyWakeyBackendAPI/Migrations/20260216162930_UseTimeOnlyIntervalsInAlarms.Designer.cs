@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WakeyWakeyBackendAPI.Models;
@@ -11,9 +12,11 @@ using WakeyWakeyBackendAPI.Models;
 namespace WakeyWakeyBackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260216162930_UseTimeOnlyIntervalsInAlarms")]
+    partial class UseTimeOnlyIntervalsInAlarms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,33 +27,33 @@ namespace WakeyWakeyBackendAPI.Migrations
 
             modelBuilder.Entity("WakeyWakeyBackendAPI.Models.Alarm", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AlarmId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AlarmId"));
 
-                    b.Property<int>("DaysToRepeat")
-                        .HasColumnType("integer");
+                    b.Property<string>("AlarmName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<TimeOnly>("EarliestWakeTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<bool>("Enabled")
+                    b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<TimeOnly>("LatestWakeTime")
                         .HasColumnType("time without time zone");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                    b.Property<int>("RepeatingDays")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("AlarmId");
 
                     b.HasIndex("UserId");
 

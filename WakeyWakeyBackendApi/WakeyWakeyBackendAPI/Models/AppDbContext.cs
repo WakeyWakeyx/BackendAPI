@@ -18,6 +18,7 @@ namespace WakeyWakeyBackendAPI.Models
 
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Alarm> Alarms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
