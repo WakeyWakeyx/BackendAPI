@@ -25,7 +25,7 @@ public class SleepSession
     [Required]
     public required DateTime WakeTime { get; set; }
     
-    /// <summary>The duration of the lightest sleep stages</summary>
+    /// <summary>The duration of the lightest sleep stages.</summary>
     [Required]
     public required TimeSpan LightSleepDuration { get; set; }
     
