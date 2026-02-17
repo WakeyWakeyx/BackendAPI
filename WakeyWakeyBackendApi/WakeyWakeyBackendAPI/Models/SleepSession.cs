@@ -10,7 +10,7 @@ public class SleepSession
     /// <summary>The unique id of this sleep session.</summary>
     [Key]
     [Required]
-    public int SessionId { get; set; }
+    public int Id { get; set; }
     
     /// <summary>The unique id of the user this sleep session applies to.</summary>
     [Required]

@@ -56,7 +56,7 @@ public class SleepSessionController : ControllerBase
     private static ExistingSleepSessionDto ExistingSleepSessionDto(SleepSession session)
     {
         return new ExistingSleepSessionDto(
-            Id: session.SessionId,
+            Id: session.Id,
             BedTime: session.BedTime,
             WakeTime: session.WakeTime,
             LightSleepDuration: session.LightSleepDuration,
