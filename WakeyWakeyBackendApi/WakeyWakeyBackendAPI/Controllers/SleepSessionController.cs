@@ -34,8 +34,35 @@ public class SleepSessionController : ControllerBase
         // Retrieve sleep session records.
         var sleepSessions = await _context.SleepSessions
             .Where(session => session.UserId == userId)
-            .Select(session => new SleepSessionResponseDto(session.BedTime, session.WakeTime))
+            .Select(session => ExistingSleepSessionDto(session))
             .ToListAsync();
         return Ok(sleepSessions);
+    }
+
+    private static SleepSession SleepSessionEntity(int userId, FreshSleepSessionDto session)
+    {
+        return new SleepSession
+        {
+            UserId = userId,
+            BedTime = session.BedTime,
+            WakeTime = session.WakeTime,
+            LightSleepDuration = session.LightSleepDuration,
+            RemSleepDuration = session.RemSleepDuration,
+            DeepSleepDuration = session.DeepSleepDuration,
+            AverageHeartRate = session.AverageHeartRate
+        };
+    }
+
+    private static ExistingSleepSessionDto ExistingSleepSessionDto(SleepSession session)
+    {
+        return new ExistingSleepSessionDto(
+            Id: session.SessionId,
+            BedTime: session.BedTime,
+            WakeTime: session.WakeTime,
+            LightSleepDuration: session.LightSleepDuration,
+            RemSleepDuration: session.RemSleepDuration,
+            DeepSleepDuration: session.DeepSleepDuration,
+            AverageHeartRate: session.AverageHeartRate
+        );
     }
 }
