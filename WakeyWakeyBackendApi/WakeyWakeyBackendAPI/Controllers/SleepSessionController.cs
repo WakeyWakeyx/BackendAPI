@@ -20,25 +20,89 @@ public class SleepSessionController : ControllerBase
     }
     
     /// <summary>Retrieves all sleep sessions associated with a given user.</summary>
-    /// <param name="userId">The unique id of the user to retrieve for.</param>
-    /// <returns>A sequence containing all sleep sessions tracked for the user, if any.</returns>
-    [HttpGet]
+    /// <returns>A list containing all sleep sessions tracked for the user, if any.</returns>
     [Authorize]
-    public async Task<ActionResult<IEnumerable<SleepSession>>> GetSleepSessions(int userId)
+    [HttpGet]
+    public async Task<ActionResult<List<ExistingSleepSessionDto>>> GetSleepSessions()
     {
-        // Validate incoming userId against that in the jwt token.
-        var actualUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (actualUserId == null || !actualUserId.Equals(userId.ToString()))
+        var userId = GetUserId(User);
+        if (userId == null)
             return Unauthorized();
         
         // Retrieve sleep session records.
-        var sleepSessions = await _context.SleepSessions
-            .Where(session => session.UserId == userId)
+        var sessions = await _context.SleepSessions
+            .Where(session => session.UserId == userId.Value)
             .Select(session => ExistingSleepSessionDto(session))
             .ToListAsync();
-        return Ok(sleepSessions);
+        return Ok(sessions);
     }
 
+    /// <summary>Creates and stores a new sleep session in a user's history.</summary>
+    /// <param name="session">The sleep session details.</param>
+    /// <returns>The provided sleep session details plus its assigned id.</returns>
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<ExistingSleepSessionDto>> CreateSleepSession([FromBody] FreshSleepSessionDto session)
+    {
+        var userId = GetUserId(User);
+        if (userId == null)
+            return Unauthorized();
+        
+        // Create and save the new sleep session.
+        var sessionEntity = SleepSessionEntity(userId.Value, session);
+        _context.SleepSessions.Add(sessionEntity);
+        await _context.SaveChangesAsync();
+        return ExistingSleepSessionDto(sessionEntity);
+    }
+
+    /// <summary>Deletes a specific sleep session from a user's history.</summary>
+    /// <param name="sessionId">The id of the sleep session.</param>
+    /// <returns>HTTP OK if the requested sleep session was found and deleted.</returns>
+    [Authorize]
+    [HttpDelete("{sessionId:int}")]
+    public async Task<ActionResult> DeleteSleepSession([FromRoute] int sessionId)
+    {
+        var userId = GetUserId(User);
+        if (userId == null)
+            return Unauthorized();
+        
+        // Try finding the requested session.
+        var sessionEntity = await GetSleepSession(userId.Value, sessionId);
+        if (sessionEntity == null)
+            return NotFound();
+        
+        // If found, delete the sleep session.
+        _context.SleepSessions.Remove(sessionEntity);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    /// <summary>Helper method for finding a specific sleep session.</summary>
+    /// <param name="userId">The id of the user.</param>
+    /// <param name="sessionId">The id of the sleep session.</param>
+    /// <returns>The requested SleepSession entity, or null if not found.</returns>
+    private async Task<SleepSession?> GetSleepSession(int userId, int sessionId)
+    {
+        return await _context.SleepSessions
+            .FirstOrDefaultAsync(session => session.UserId == userId && session.Id == sessionId);
+    }
+
+    /// <summary>Helper method for extracting a user's id from their jwt token.</summary>
+    /// <param name="principal">The claims principal from which to extract the id from.</param>
+    /// <returns>The integer id of the user, or null if none could be found.</returns>
+    /// <remarks>This method should be replaced with an extension once the alarms branch is merged.</remarks>
+    private static int? GetUserId(ClaimsPrincipal principal)
+    {
+        var userIdText = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdText != null && int.TryParse(userIdText, out var userId))
+            return userId;
+        return null;
+    }
+
+    /// <summary>Helper method for converting a FreshSleepSession to a SleepSession entity.</summary>
+    /// <param name="userId">The id of the user.</param>
+    /// <param name="session">The sleep session details.</param>
+    /// <returns>An SleepSession entity with the same details as the dto.</returns>
     private static SleepSession SleepSessionEntity(int userId, FreshSleepSessionDto session)
     {
         return new SleepSession
@@ -53,6 +117,9 @@ public class SleepSessionController : ControllerBase
         };
     }
 
+    /// <summary>Helper method for converting a SleepSession entity to an ExistingSleepSession.</summary>
+    /// <param name="session">The sleep session entity.</param>
+    /// <returns>An ExistingSleepSession with the same details as the entity.</returns>
     private static ExistingSleepSessionDto ExistingSleepSessionDto(SleepSession session)
     {
         return new ExistingSleepSessionDto(
