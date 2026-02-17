@@ -48,10 +48,12 @@ public class SleepSessionsController : ControllerBase
         if (userId == null)
             return Unauthorized();
         
-        // Create and save the new sleep session.
+        // Create and save the new sleep session, then delete outdate records.
         var sessionEntity = SleepSessionEntity(userId.Value, session);
         _context.SleepSessions.Add(sessionEntity);
         await _context.SaveChangesAsync();
+        await DeleteOutdatedSleepSessions(userId.Value);
+        
         return ExistingSleepSessionDto(sessionEntity);
     }
 
@@ -75,6 +77,17 @@ public class SleepSessionsController : ControllerBase
         _context.SleepSessions.Remove(sessionEntity);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    /// <summary>Deletes all sleep session records older than 30 days for a given user.</summary>
+    /// <param name="userId">The id of the user.</param>
+    /// <remarks>Sleep session "freshness" is based on WakeTime converted to UTC.</remarks>
+    private async Task DeleteOutdatedSleepSessions(int userId)
+    {
+        await _context.SleepSessions
+            .Where(session => session.UserId == userId &&
+                              session.WakeTime.ToUniversalTime() <= DateTime.UtcNow.AddDays(-30))
+            .ExecuteDeleteAsync();
     }
 
     /// <summary>Helper method for finding a specific sleep session.</summary>
