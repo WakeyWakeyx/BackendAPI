@@ -3,57 +3,40 @@ using WakeyWakeyBackendAPI.Models;
 namespace WakeyWakeyBackendAPI.Dtos;
 
 /// <summary>Holds the details of a newly-created alarm.</summary>
-public class FreshAlarmDto
-{
-    /// <summary>The name of the alarm, if any.</summary>
-    public string Name { get; set; } = string.Empty;
-    
-    /// <summary>The earliest possible time that the alarm should activate at.</summary>
-    public required TimeOnly EarliestWakeTime { get; set; }
-    
-    /// <summary>The latest possible time that the alarm should activate at.</summary>
-    public required TimeOnly LatestWakeTime { get; set; }
-    
-    /// <summary>The weekdays on which this alarm can activate, if any.</summary>
-    public WeekDays DaysToRepeat { get; set; } = WeekDays.None;
-}
+/// <param name="Name">The name of the alarm, if any.</param>
+/// <param name="EarliestWakeTime">The earliest possible time that the alarm should activate at.</param>
+/// <param name="LatestWakeTime">The latest possible time that the alarm should activate at.</param>
+/// <param name="DaysToRepeat">The weekdays on which this alarm can activate, if any.</param>
+public record FreshAlarmDto(
+    TimeOnly EarliestWakeTime,
+    TimeOnly LatestWakeTime,
+    WeekDays DaysToRepeat = WeekDays.None,
+    string Name = "");
 
 /// <summary>Holds the details of a previously-created alarm.</summary>
-public class ExistingAlarmDto
-{
-    public required int Id { get; set; }
-    
-    /// <summary>The name of the alarm, if any.</summary>
-    public required string Name { get; set; }
-    
-    /// <summary>Is this alarm currently enabled?</summary>
-    public required bool Enabled { get; set; }
-    
-    /// <summary>The earliest possible time that the alarm should activate at.</summary>
-    public required TimeOnly EarliestWakeTime { get; set; }
-    
-    /// <summary>The latest possible time that the alarm should activate at.</summary>
-    public required TimeOnly LatestWakeTime { get; set; }
-    
-    /// <summary>The weekdays on which this alarm can activate, if any.</summary>
-    public required WeekDays DaysToRepeat { get; set; }
-}
+/// <param name="Id">The unique identifier of this alarm.</param>
+/// <param name="Name">The name of the alarm, if any.</param>
+/// <param name="Enabled">Is this alarm currently enabled?</param>
+/// <param name="EarliestWakeTime">The earliest possible time that the alarm should activate at.</param>
+/// <param name="LatestWakeTime">The latest possible time that the alarm should activate at.</param>
+/// <param name="DaysToRepeat">The weekdays on which this alarm can activate, if any.</param>
+public record ExistingAlarmDto(
+    int Id,
+    string Name,
+    bool Enabled,
+    TimeOnly EarliestWakeTime,
+    TimeOnly LatestWakeTime,
+    WeekDays DaysToRepeat);
 
 /// <summary>Holds the details to update in an existing alarm.</summary>
-public class UpdatedAlarmDto
-{
-    /// <summary>The new name of the alarm, if any.</summary>
-    public string? Name { get; set; } = null;
-    
-    /// <summary>Is this alarm currently enabled?</summary>
-    public bool? Enabled { get; set; } = null;
-    
-    /// <summary>The new earliest possible time that the alarm should activate at.</summary>
-    public TimeOnly? EarliestWakeTime { get; set; } = null;
-    
-    /// <summary>The new latest possible time that the alarm should activate at.</summary>
-    public TimeOnly? LatestWakeTime { get; set; } = null;
-    
-    /// <summary>The new weekdays on which this alarm can activate, if any.</summary>
-    public WeekDays? DaysToRepeat { get; set; } = null;
-}
+/// <param name="Enabled">Is this alarm currently enabled?</param>
+/// <param name="Name">The new name of the alarm, if any.</param>
+/// <param name="EarliestWakeTime">The new earliest possible time that the alarm should activate at.</param>
+/// <param name="LatestWakeTime">The new latest possible time that the alarm should activate at.</param>
+/// <param name="DaysToRepeat">The new weekdays on which this alarm can activate, if any.</param>
+public record UpdatedAlarmDto(
+    string? Name = null,
+    bool? Enabled = null,
+    TimeOnly? EarliestWakeTime = null,
+    TimeOnly? LatestWakeTime = null,
+    WeekDays? DaysToRepeat = null);

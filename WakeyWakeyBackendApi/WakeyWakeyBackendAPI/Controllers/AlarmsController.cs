@@ -138,15 +138,13 @@ public class AlarmsController : ControllerBase
     /// <returns>An ExistingAlarmDto with the same details as the entity.</returns>
     private static ExistingAlarmDto CreateAlarmDto(Alarm alarm)
     {
-        return new ExistingAlarmDto
-        {
-            Id = alarm.Id,
-            Name = alarm.Name,
-            Enabled = alarm.Enabled,
-            EarliestWakeTime = alarm.EarliestWakeTime,
-            LatestWakeTime = alarm.LatestWakeTime,
-            DaysToRepeat = alarm.DaysToRepeat
-        };
+        return new ExistingAlarmDto(
+            Id: alarm.Id,
+            Name: alarm.Name,
+            Enabled: alarm.Enabled,
+            EarliestWakeTime: alarm.EarliestWakeTime,
+            LatestWakeTime: alarm.LatestWakeTime,
+            DaysToRepeat: alarm.DaysToRepeat);
     }
 
     /// <summary>Helper method for converting a FreshAlarmDto to an Alarm entity.</summary>
