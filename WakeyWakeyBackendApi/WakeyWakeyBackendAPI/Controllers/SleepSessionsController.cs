@@ -9,12 +9,12 @@ namespace WakeyWakeyBackendAPI.Controllers;
 
 /// <summary>Controller handling the management of users' sleep records.</summary>
 [ApiController]
-[Route("api/users/{userId:int}/sessions")]
-public class SleepSessionController : ControllerBase
+[Route("api/[controller]")]
+public class SleepSessionsController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public SleepSessionController(AppDbContext context)
+    public SleepSessionsController(AppDbContext context)
     {
         _context = context;
     }
