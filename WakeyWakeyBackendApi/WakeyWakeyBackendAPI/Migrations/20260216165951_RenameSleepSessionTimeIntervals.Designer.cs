@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WakeyWakeyBackendAPI.Models;
@@ -11,9 +12,11 @@ using WakeyWakeyBackendAPI.Models;
 namespace WakeyWakeyBackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260216165951_RenameSleepSessionTimeIntervals")]
+    partial class RenameSleepSessionTimeIntervals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,26 +27,17 @@ namespace WakeyWakeyBackendAPI.Migrations
 
             modelBuilder.Entity("WakeyWakeyBackendAPI.Models.SleepSession", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SessionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AverageHeartRate")
-                        .HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SessionId"));
 
                     b.Property<DateTime>("BedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<TimeSpan>("DeepSleepDuration")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan>("LightSleepDuration")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan>("RemSleepDuration")
-                        .HasColumnType("interval");
+                    b.Property<int>("SleepScore")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -51,7 +45,7 @@ namespace WakeyWakeyBackendAPI.Migrations
                     b.Property<DateTime>("WakeTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("SessionId");
 
                     b.HasIndex("UserId");
 
