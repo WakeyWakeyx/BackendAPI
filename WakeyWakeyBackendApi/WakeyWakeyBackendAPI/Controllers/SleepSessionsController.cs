@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,9 @@ public class SleepSessionsController : ControllerBase
     /// <returns>A list containing all sleep sessions tracked for the user, if any.</returns>
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<List<ExistingSleepSessionDto>>> GetSleepSessions()
+    public async Task<ActionResult<PagedDto<ExistingSleepSessionDto>>> GetSleepSessions(
+        [FromQuery] [Range(0, int.MaxValue)] int cursor = 0,
+        [FromQuery] [Range(1, int.MaxValue)] int limit = 10)
     {
         var userId = GetUserId(User);
         if (userId == null)
@@ -31,10 +34,17 @@ public class SleepSessionsController : ControllerBase
         
         // Retrieve sleep session records.
         var sessions = await _context.SleepSessions
-            .Where(session => session.UserId == userId.Value)
+            .Where(session => session.UserId == userId.Value && session.Id >= cursor)
+            .OrderBy(session => session.Id)
             .Select(session => ExistingSleepSessionDto(session))
+            .Take(limit + 1)
             .ToListAsync();
-        return Ok(sessions);
+        
+        // Check if there should be another page and return the current items.
+        var nextCursor = sessions.Count >= limit ? sessions.Last().Id : -1;
+        if (sessions.Count >= limit)
+            sessions.RemoveAt(sessions.Count - 1);
+        return new PagedDto<ExistingSleepSessionDto>(nextCursor, sessions.Count, sessions);
     }
 
     /// <summary>Creates and stores a new sleep session in a user's history.</summary>
